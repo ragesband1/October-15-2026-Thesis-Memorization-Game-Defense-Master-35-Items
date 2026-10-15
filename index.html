@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thesis Memorization Game: Defense Master 35-Items</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            bg: '#080d1a',
+                            panel: '#101728',
+                            card: '#182238',
+                            border: '#24324d',
+                            accent: '#38bdf8',
+                            neon: '#facc15', // Highlighting color
+                            danger: '#f43f5e',
+                            success: '#10b981'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-mono-custom { font-family: 'Fira Code', monospace; }
+        /* Glowing yellow text effect for yellow highlights */
+        .neon-highlight {
+            background-color: rgba(250, 204, 21, 0.15);
+            color: #facc15;
+            border: 1px solid rgba(250, 204, 21, 0.4);
+            box-shadow: 0 0 10px rgba(250, 204, 21, 0.15);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #080d1a; }
+        ::-webkit-scrollbar-thumb { background: #24324d; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #38bdf8; }
+    </style>
+</head>
+<body class="bg-cyber-bg text-slate-100 min-h-screen flex flex-col justify-between selection:bg-cyber-neon selection:text-black">
+
+    <!-- Navbar Header -->
+    <header class="w-full border-b border-cyber-border bg-cyber-panel/90 backdrop-blur-md sticky top-0 z-50 px-4 sm:px-8 py-3.5 flex flex-wrap justify-between items-center shadow-2xl">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyber-neon via-amber-400 to-amber-600 flex items-center justify-center text-black font-extrabold text-xl shadow-lg shadow-cyber-neon/20 animate-pulse">
+                ⚡
+            </div>
+            <div>
+                <h1 class="font-extrabold text-base sm:text-lg tracking-wide text-white">THESIS MEMORIZATION GAME <span class="text-xs px-2 py-0.5 rounded bg-cyber-neon/20 text-cyber-neon font-mono border border-cyber-neon/40 ml-1">35 ALL ITEMS</span></h1>
+                <p class="text-[11px] text-slate-400">Complete PDF Defense Recall System • Space & Letter Matcher</p>
+            </div>
+        </div>
+
+        <!-- Global Status Bar -->
+        <div id="statusBar" class="hidden flex flex-wrap items-center gap-3 sm:gap-6 mt-2 sm:mt-0 font-mono-custom text-xs sm:text-sm">
+            <div class="bg-cyber-bg px-3.5 py-1.5 rounded-lg border border-cyber-border flex items-center space-x-2 shadow-inner">
+                <span class="text-slate-400">PHASE:</span>
+                <span id="currentPhaseBadge" class="text-cyber-neon font-bold">REVIEW (30 MIN)</span>
+            </div>
+            <div class="bg-cyber-bg px-3.5 py-1.5 rounded-lg border border-cyber-border flex items-center space-x-2 shadow-inner">
+                <span class="text-slate-400">TIMER:</span>
+                <span id="globalTimer" class="text-cyber-accent font-bold tracking-widest text-base">30:00</span>
+            </div>
+            <div class="bg-cyber-bg px-3.5 py-1.5 rounded-lg border border-cyber-border flex items-center space-x-2 shadow-inner">
+                <span class="text-slate-400">SCORE:</span>
+                <span id="globalScore" class="text-cyber-success font-bold text-base">0</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow flex items-center justify-center p-3 sm:p-6 max-w-7xl mx-auto w-full">
+
+        <!-- SCREEN 1: Welcome Screen -->
+        <div id="welcomeScreen" class="w-full bg-cyber-panel border border-cyber-border rounded-2xl p-6 sm:p-10 shadow-2xl relative overflow-hidden my-4">
+            <div class="absolute -right-20 -top-20 w-72 h-72 bg-cyber-neon/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -left-20 -bottom-20 w-72 h-72 bg-cyber-accent/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="max-w-3xl mx-auto text-center space-y-6 relative z-10">
+                <span class="inline-block px-3.5 py-1 bg-cyber-neon/10 border border-cyber-neon/40 text-cyber-neon text-xs font-mono rounded-full uppercase tracking-widest font-semibold">
+                    Complete 35-Item Thesis Defense Guide Included
+                </span>
+                <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
+                    Thesis Memorization <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-neon via-amber-300 to-amber-500">Defense Master</span>
+                </h2>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                    Nandito na ang buong <strong class="text-cyber-neon">35 Items</strong> mula sa iyong ibinigay na PDF guide.
+                    May <strong class="text-white">30 Minutong Review</strong> kung saan buong lalabas ang 35 items na nakahighlight ang yellow texts, at <strong class="text-white">15 Minutong Challenge</strong> kung saan isasagot mo gamit ang spaces at letters (WALANG PERIOD).
+                </p>
+
+                <!-- Rules Box -->
+                <div class="bg-cyber-bg/90 border border-cyber-border p-5 rounded-xl text-left space-y-3 font-mono-custom text-xs sm:text-sm shadow-inner">
+                    <p class="text-cyber-neon font-bold flex items-center space-x-2 text-sm">
+                        <span>⚡ RULES FOR THE DEFENSE GAME:</span>
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 text-slate-300">
+                        <li><strong class="text-white">35 COMPLETE ITEMS:</strong> Items 1 to 18 Panel QA, 19-31 Thesis Core Sections, at 32-35 All RRL Categories.</li>
+                        <li><strong class="text-white">NO PERIOD NEEDED:</strong> Type answers using strictly letters and spaces. Do not add period (.) punctuation.</li>
+                        <li><strong class="text-white">SCORING SYSTEM:</strong> May Dagdag Points kapag tama ang nabigkas na salita mula sa review, pero may <strong class="text-cyber-danger">MINUS POINTS</strong> kapag mali ang word upang maiwasan ang hula-hula sa defense!</li>
+                    </ul>
+                </div>
+
+                <div class="pt-2 flex flex-col sm:flex-row justify-center gap-4">
+                    <button onclick="startReviewPhase()" class="px-8 py-4 bg-gradient-to-r from-cyber-neon via-amber-400 to-amber-500 text-black font-extrabold rounded-xl shadow-lg shadow-cyber-neon/25 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center space-x-3 text-base sm:text-lg">
+                        <span>START 30-MIN REVIEW (35 ITEMS)</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                    </button>
+                    <button onclick="skipToChallenge()" class="px-6 py-4 bg-cyber-bg border border-cyber-border text-slate-300 hover:text-white hover:border-cyber-accent font-semibold rounded-xl transition-all text-sm">
+                        Direct to 15-Min Challenge ⚡
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 2: Review Phase (30 Minutes) -->
+        <div id="reviewScreen" class="hidden w-full bg-cyber-panel border border-cyber-border rounded-2xl p-4 sm:p-8 shadow-2xl relative my-2">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center pb-5 border-b border-cyber-border gap-4">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs font-mono text-cyber-neon uppercase tracking-wider bg-cyber-neon/10 px-3 py-1 rounded-md border border-cyber-neon/30 font-bold">Phase 1: Full Review</span>
+                        <span class="text-xs font-mono text-slate-400">Total Items: 35</span>
+                    </div>
+                    <h3 class="text-xl sm:text-2xl font-bold text-white mt-2">Nakahighlight na Yellow Texts para sa Thesis Defense</h3>
+                    <p class="text-slate-400 text-xs sm:text-sm mt-1">Kabisaduhin ang mga dilaw na teksto. Eto ang lalabas sa 15-minute scrambled defense challenge.</p>
+                </div>
+                <button onclick="startChallengePhase()" class="w-full lg:w-auto px-6 py-3.5 bg-gradient-to-r from-cyber-accent to-sky-400 text-slate-950 font-extrabold rounded-xl hover:brightness-110 transition-all shadow-lg shadow-cyber-accent/20 flex items-center justify-center space-x-2 text-sm whitespace-nowrap">
+                    <span>READY NA AKO! (START 15-MIN CHALLENGE)</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </button>
+            </div>
+
+            <!-- Scrollable Content of ALL 35 Items -->
+            <div id="reviewItemsContainer" class="mt-6 space-y-6 max-h-[65vh] overflow-y-auto pr-2">
+                <!-- Javascript will populate all 35 items -->
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-cyber-border flex flex-col sm:flex-row justify-between items-center gap-3">
+                <span class="text-xs text-slate-400 font-mono">Tip: Focus on highlighted phrases. Space and letters lang ang kailangan.</span>
+                <button onclick="startChallengePhase()" class="px-5 py-2.5 bg-cyber-bg border border-cyber-neon/50 hover:bg-cyber-neon/10 text-cyber-neon text-xs font-mono rounded-lg transition-all font-semibold">
+                    Proceed to Challenge Now &rarr;
+                </button>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: Challenge Phase (15 Minutes) -->
+        <div id="challengeScreen" class="hidden w-full bg-cyber-panel border border-cyber-border rounded-2xl p-4 sm:p-8 shadow-2xl relative max-w-4xl mx-auto my-2">
+            <!-- Progress Header -->
+            <div class="w-full bg-cyber-bg h-2.5 rounded-full overflow-hidden border border-cyber-border mb-6">
+                <div id="challengeProgressBar" class="bg-gradient-to-r from-cyber-neon via-amber-400 to-cyber-accent h-full w-0 transition-all duration-300"></div>
+            </div>
+
+            <div class="flex flex-wrap justify-between items-center mb-6 gap-2">
+                <div>
+                    <span id="challengeCounter" class="text-xs font-mono text-cyber-accent bg-cyber-accent/10 px-3 py-1 rounded border border-cyber-accent/30 font-bold">ITEM 1 OF 35</span>
+                    <h3 id="challengeCategory" class="text-base sm:text-lg font-bold text-white mt-1">10 Possible Panel Questions</h3>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs text-slate-400 font-mono">CHALLENGE TIMER:</span>
+                    <span id="challengeTimer" class="text-lg font-mono font-bold text-cyber-danger ml-2">15:00</span>
+                </div>
+            </div>
+
+            <!-- Question & Scramble Box -->
+            <div class="bg-cyber-bg border border-cyber-border p-5 sm:p-7 rounded-xl space-y-5 shadow-inner">
+                <div>
+                    <p class="text-xs text-slate-400 font-mono uppercase tracking-wider">Panel Prompt / Question:</p>
+                    <h4 id="questionPromptText" class="text-lg sm:text-2xl font-bold text-white mt-1 leading-snug">What is AI?</h4>
+                </div>
+
+                <div class="p-4 bg-cyber-card rounded-lg border border-cyber-border/80">
+                    <p class="text-xs text-cyber-neon font-mono mb-1.5 font-semibold">SCRAMBLED RECALL WORDS (Rearrange mentally):</p>
+                    <p id="scrambledWordsDisplay" class="font-mono-custom text-base sm:text-lg text-amber-300 font-semibold tracking-wider select-none leading-relaxed"></p>
+                </div>
+
+                <!-- Input Field -->
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label for="userAnswerInput" class="text-xs text-slate-300 font-mono">YOUR ANSWER (Letters & Spaces ONLY, No Period):</label>
+                        <span id="inputErrorNotice" class="text-xs text-cyber-danger font-mono hidden font-semibold">⚠️ Strip punctuation! Letters & spaces only.</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input type="text" id="userAnswerInput" autocomplete="off" spellcheck="false"
+                            placeholder="Type words here separated by space..."
+                            oninput="validateInputFormat(this)"
+                            onkeydown="handleKeydown(event)"
+                            class="flex-grow bg-cyber-panel border border-cyber-border focus:border-cyber-neon rounded-xl px-4 py-3.5 text-white font-mono-custom text-sm outline-none transition-all shadow-inner">
+                        <button onclick="submitAnswer()" class="px-7 py-3.5 bg-gradient-to-r from-cyber-neon to-amber-500 text-black font-extrabold rounded-xl hover:brightness-110 transition-all shadow-lg shadow-cyber-neon/20 whitespace-nowrap">
+                            SUBMIT ↵
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-slate-500 font-mono">Tip: Spacing ang gamitin kada salita. Huwag maglagay ng tuldok (.).</p>
+                </div>
+            </div>
+
+            <!-- Live Feedback Toast -->
+            <div id="feedbackBox" class="mt-4 p-4 rounded-xl border hidden transition-all">
+                <div class="flex items-center space-x-3">
+                    <div id="feedbackIcon" class="text-2xl"></div>
+                    <div>
+                        <h5 id="feedbackTitle" class="font-bold text-sm"></h5>
+                        <p id="feedbackDesc" class="text-xs text-slate-300 mt-0.5 font-mono-custom"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 4: Game Over & Review Breakdown -->
+        <div id="resultScreen" class="hidden w-full bg-cyber-panel border border-cyber-border rounded-2xl p-6 sm:p-10 shadow-2xl max-w-3xl mx-auto space-y-6 my-2">
+            <div class="text-center space-y-3">
+                <div class="w-16 h-16 rounded-2xl bg-cyber-neon/20 border border-cyber-neon text-cyber-neon flex items-center justify-center mx-auto text-3xl shadow-xl shadow-cyber-neon/10 animate-bounce">
+                    🎓
+                </div>
+                <span class="text-xs font-mono text-cyber-neon uppercase tracking-wider bg-cyber-neon/10 px-3 py-1 rounded-full border border-cyber-neon/30">Defense Simulation Completed</span>
+                <h3 class="text-3xl font-extrabold text-white">Thesis Defense Performance Report</h3>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 font-mono-custom text-center">
+                <div class="bg-cyber-bg p-4 rounded-xl border border-cyber-border">
+                    <p class="text-xs text-slate-400">TOTAL SCORE</p>
+                    <p id="resFinalScore" class="text-2xl font-bold text-cyber-neon mt-1">0</p>
+                </div>
+                <div class="bg-cyber-bg p-4 rounded-xl border border-cyber-border">
+                    <p class="text-xs text-slate-400">CORRECT WORDS</p>
+                    <p id="resCorrectCount" class="text-2xl font-bold text-cyber-success mt-1">0</p>
+                </div>
+                <div class="bg-cyber-bg p-4 rounded-xl border border-cyber-border col-span-2 sm:col-span-1">
+                    <p class="text-xs text-slate-400">PENALTY ERRORS</p>
+                    <p id="resPenaltyCount" class="text-2xl font-bold text-cyber-danger mt-1">0</p>
+                </div>
+            </div>
+
+            <!-- Overall Verdict -->
+            <div id="defenseVerdictBox" class="p-4 rounded-xl border text-sm font-mono-custom"></div>
+
+            <!-- Items to Study Section -->
+            <div class="space-y-3">
+                <h4 class="text-sm font-bold text-slate-300 font-mono uppercase tracking-wider">Lessons to Review for Actual Defense:</h4>
+                <div id="lessonsToStudyContainer" class="bg-cyber-bg border border-cyber-border rounded-xl p-4 max-h-48 overflow-y-auto space-y-2 text-xs font-mono">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <div class="flex justify-center pt-2">
+                <button onclick="restartGame()" class="px-8 py-3.5 bg-gradient-to-r from-cyber-neon to-amber-500 text-black font-extrabold rounded-xl shadow-lg hover:scale-105 transition-all">
+                    RESTART SIMULATION 🔄
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full border-t border-cyber-border bg-cyber-panel/50 py-3 px-6 text-center text-xs text-slate-500 font-mono">
+        Thesis Memorization Game • 35 Complete Defense Items
+    </footer>
+
+    <!-- Custom Modal -->
+    <div id="customModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-cyber-panel border border-cyber-border rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
+            <h4 id="modalTitle" class="text-lg font-bold text-white">Notice</h4>
+            <p id="modalMessage" class="text-sm text-slate-300"></p>
+            <div class="flex justify-end pt-2">
+                <button onclick="closeModal()" class="px-5 py-2.5 bg-cyber-neon text-black font-bold rounded-xl text-sm shadow-md hover:bg-amber-400 transition-all">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logic Script -->
+    <script>
+        // FULL 35 ITEMS DATASET FROM YOUR EXACT SPECIFICATION (NO SHORTCUTS OR TRUNCATION)
+        const thesisData = [
+            // Items 1 - 18: Panel Questions
+            { id: 1, category: "Panel Questions & Answers", prompt: "1. What is AI?", target: "Technology that simulates human intelligence.", highlight: "Technology that simulates human intelligence." },
+            { id: 2, category: "Panel Questions & Answers", prompt: "2. What are the types of AI?", target: "Narrow AI, General AI, and Super AI.", highlight: "Narrow AI, General AI, and Super AI." },
+            { id: 3, category: "Panel Questions & Answers", prompt: "3. What are examples of AI tools?", target: "ChatGPT, Gemini, Firefly, and Canva AI.", highlight: "ChatGPT, Gemini, Firefly, and Canva AI." },
+            { id: 4, category: "Panel Questions & Answers", prompt: "4. What are the advantages and disadvantages of AI?", target: "Saves time but may cause dependence.", highlight: "Saves time but may cause dependence." },
+            { id: 5, category: "Panel Questions & Answers", prompt: "5. Why did you choose this topic?", target: "To understand students' AI use.", highlight: "To understand students' AI use." },
+            { id: 6, category: "Panel Questions & Answers", prompt: "6. How does AI affect students' creativity?", target: "It supports creativity but may cause dependence.", highlight: "It supports creativity but may cause dependence." },
+            { id: 7, category: "Panel Questions & Answers", prompt: "7. How can students use AI responsibly?", target: "By checking outputs and maintaining originality.", highlight: "By checking outputs and maintaining originality." },
+            { id: 8, category: "Panel Questions & Answers", prompt: "8. What if there is no AI?", target: "Students can use traditional methods.", highlight: "Students can use traditional methods." },
+            { id: 9, category: "Panel Questions & Answers", prompt: "9. Can AI replace human creativity?", target: "No, human creativity remains important.", highlight: "No, human creativity remains important." },
+            { id: 10, category: "Panel Questions & Answers", prompt: "10. What is your main recommendation?", target: "Use AI responsibly and maintain creativity.", highlight: "Use AI responsibly and maintain creativity." },
+            { id: 11, category: "Panel Questions & Answers", prompt: "11. What is the relevance of your research?", target: "To promote responsible AI use in design.", highlight: "To promote responsible AI use in design." },
+            { id: 12, category: "Panel Questions & Answers", prompt: "12. What is the importance of your research?", target: "To encourage creativity and responsible AI use.", highlight: "To encourage creativity and responsible AI use." },
+            { id: 13, category: "Panel Questions & Answers", prompt: "13. What are the uses of AI?", target: "For learning, creativity, and productivity.", highlight: "For learning, creativity, and productivity." },
+            { id: 14, category: "Panel Questions & Answers", prompt: "14. Can you live in this world without AI?", target: "Yes, through traditional methods.", highlight: "Yes, through traditional methods." },
+            { id: 15, category: "Panel Questions & Answers", prompt: "15. If you use AI with critical thinking, can you improve originality?", target: "Yes, by using personal creativity.", highlight: "Yes, by using personal creativity." },
+            { id: 16, category: "Panel Questions & Answers", prompt: "16. Without AI, can students study very well?", target: "Yes, through traditional learning.", highlight: "Yes, through traditional learning." },
+            { id: 17, category: "Panel Questions & Answers", prompt: "17. Without AI, will students' studies be affected?", target: "Yes, some tasks take longer.", highlight: "Yes, some tasks take longer." },
+            { id: 18, category: "Panel Questions & Answers", prompt: "18. Who is smarter, AI or students?", target: "Students, through critical thinking.", highlight: "Students, through critical thinking." },
+
+            // Items 19 - 31: Thesis Core Sections & Frameworks
+            { id: 19, category: "Thesis Core Sections", prompt: "19. What is the Introduction?", target: "AI helps students in illustration and design.", highlight: "AI helps students in illustration and design." },
+            { id: 20, category: "Thesis Core Sections", prompt: "20. What is the Background?", target: "AI helps students create ideas and designs.", highlight: "AI helps students create ideas and designs." },
+            { id: 21, category: "Thesis Core Sections", prompt: "21. What is the Rationale?", target: "The study promotes responsible AI use.", highlight: "The study promotes responsible AI use." },
+            { id: 22, category: "Thesis Core Sections", prompt: "22. What are the Objectives?", target: "To identify factors, relationships, benefits, and disadvantages of AI use.", highlight: "To identify factors, relationships, benefits, and disadvantages of AI use." },
+            { id: 23, category: "Thesis Core Sections", prompt: "23. What is the Problem?", target: "The study examines AI's effects on students' creativity and design process.", highlight: "The study examines AI's effects on students' creativity and design process." },
+            { id: 24, category: "Thesis Core Sections", prompt: "24. What are the Significance of the Study?", target: "Students: Understand AI's benefits and challenges. Teachers: Understand students' AI use. Schools: Develop responsible AI guidelines. Future Researchers: Support future AI research. Researchers: Understand AI's effects on creativity.", highlight: "Students: Understand AI's benefits and challenges. Teachers: Understand students' AI use. Schools: Develop responsible AI guidelines. Future Researchers: Support future AI research. Researchers: Understand AI's effects on creativity." },
+            { id: 25, category: "Literature Review & Methodology", prompt: "25. What are the Key Findings of literature?", target: "ChatGPT use is influenced by usefulness, ease, trust, access, and AI literacy.", highlight: "ChatGPT use is influenced by usefulness, ease, trust, access, and AI literacy." },
+            { id: 26, category: "Literature Review & Methodology", prompt: "26. What is the Research Design?", target: "The study uses surveys, correlation, and regression.", highlight: "The study uses surveys, correlation, and regression." },
+            { id: 27, category: "Literature Review & Methodology", prompt: "27. What is the Theoretical Framework?", target: "TAM focuses on perceived usefulness and perceived ease of use.", highlight: "TAM focuses on perceived usefulness and perceived ease of use." },
+            { id: 28, category: "Literature Review & Methodology", prompt: "28. What is the Conceptual Framework?", target: "It shows how nine factors influence intention to use AI.", highlight: "It shows how nine factors influence intention to use AI." },
+            { id: 29, category: "Literature Review & Methodology", prompt: "29. What is the Hypothesis?", target: "The study examines the relationship between nine factors and AI-use intention.", highlight: "The study examines the relationship between nine factors and AI-use intention." },
+            { id: 30, category: "Thesis Variables & Behavioral Intention", prompt: "30. What are the Nine Variables?", target: "Perceived Usefulness & Productivity: Measures productivity. Creativity & Idea Generation: Measures idea generation. Learning, Skills & Confidence: Measures learning and skills. Concerns & Risks: Measures AI-related concerns. Design Assistance & Quality: Measures design support and output. Social Influence: Measures classmates' influence. Accessibility & Facilitating Conditions: Measures access to AI and resources. Traditional/Freehand Design Preference: Measures preference for traditional design. Ethical/Transparent Use: Measures responsible AI use.", highlight: "Perceived Usefulness & Productivity: Measures productivity. Creativity & Idea Generation: Measures idea generation. Learning, Skills & Confidence: Measures learning and skills. Concerns & Risks: Measures AI-related concerns. Design Assistance & Quality: Measures design support and output. Social Influence: Measures classmates' influence. Accessibility & Facilitating Conditions: Measures access to AI and resources. Traditional/Freehand Design Preference: Measures preference for traditional design. Ethical/Transparent Use: Measures responsible AI use." },
+            { id: 31, category: "Thesis Variables & Behavioral Intention", prompt: "31. What is Continued Use / Behavioral Intention?", target: "It measures the intention to continue using AI.", highlight: "It measures the intention to continue using AI." },
+
+            // Items 32 - 35: Full RRL Categories with complete author details & descriptions
+            { id: 32, category: "Literature Review (RRLs)", prompt: "32. For ChatGPT Adoption and Behavioral Intention, we have seven RRLs?", target: "Haq et al. (2025): Usefulness and ease of use influence ChatGPT adoption. Himang et al. (2026): Performance expectancy influences behavioral intention. Mariñas et al. (2025): Usefulness, trust, and social influence affect ChatGPT use. Pham et al. (2025): Usefulness and subjective norms influence intention. Jazim et al. (2025): Support, trust, and social influence affect intention. Verma and Kumar (2026): Learning support and accessibility influence ChatGPT use. Yang (2026): TAM helps explain ChatGPT adoption.", highlight: "Haq et al. (2025): Usefulness and ease of use influence ChatGPT adoption. Himang et al. (2026): Performance expectancy influences behavioral intention. Mariñas et al. (2025): Usefulness, trust, and social influence affect ChatGPT use. Pham et al. (2025): Usefulness and subjective norms influence intention. Jazim et al. (2025): Support, trust, and social influence affect intention. Verma and Kumar (2026): Learning support and accessibility influence ChatGPT use. Yang (2026): TAM helps explain ChatGPT adoption." },
+            { id: 33, category: "Literature Review (RRLs)", prompt: "33. For Students’ Experiences and Perceptions, we have four RRLs?", target: "Ammari et al. (2025): Students actively interact with ChatGPT. Monib et al. (2025): Students find ChatGPT useful for learning. Shuhaiber et al. (2025): The study examines students' ChatGPT experiences. Hu (2026): AI literacy supports continued ChatGPT use.", highlight: "Ammari et al. (2025): Students actively interact with ChatGPT. Monib et al. (2025): Students find ChatGPT useful for learning. Shuhaiber et al. (2025): The study examines students' ChatGPT experiences. Hu (2026): AI literacy supports continued ChatGPT use." },
+            { id: 34, category: "Literature Review (RRLs)", prompt: "34. For ChatGPT in Art, Design, and Visual Communication Design, we have four RRLs?", target: "Enggrayni et al. (2026): Social influence, ease, risks, and anxiety affect adoption. Kim et al. (2025): ChatGPT helps generate design ideas. Zhuo et al. (2025): Quality and usefulness affect satisfaction. Chen et al. (2025): ChatGPT can improve learning outcomes.", highlight: "Enggrayni et al. (2026): Social influence, ease, risks, and anxiety affect adoption. Kim et al. (2025): ChatGPT helps generate design ideas. Zhuo et al. (2025): Quality and usefulness affect satisfaction. Chen et al. (2025): ChatGPT can improve learning outcomes." },
+            { id: 35, category: "Literature Review (RRLs)", prompt: "35. For the Asian and Philippine Context, we have five RRLs?", target: "Irwanto (2025): ChatGPT research is growing in Asian education. Kazykhankyzy et al. (2026): Several factors influence ChatGPT adoption. Tinsay (2025): ChatGPT use is relatively high in the Philippines. ASEAN Foundation (2026): Generative AI is widely used by Filipino students. Radar PH (2025): AI adoption is increasing in the Philippines.", highlight: "Irwanto (2025): ChatGPT research is growing in Asian education. Kazykhankyzy et al. (2026): Several factors influence ChatGPT adoption. Tinsay (2025): ChatGPT use is relatively high in the Philippines. ASEAN Foundation (2026): Generative AI is widely used by Filipino students. Radar PH (2025): AI adoption is increasing in the Philippines." }
+        ];
+
+        // App State
+        let currentPhase = 'welcome'; 
+        let globalTimerInterval = null;
+        let timeRemainingSeconds = 30 * 60; // 30 Mins default
+        let score = 0;
+        let correctWordsTotal = 0;
+        let penaltyCountTotal = 0;
+        let currentQuestionIndex = 0;
+        let shuffledQuestions = [];
+        let missedItems = [];
+
+        function showModal(title, msg) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = msg;
+            document.getElementById('customModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').classList.add('hidden');
+        }
+
+        function switchScreen(screenId) {
+            ['welcomeScreen', 'reviewScreen', 'challengeScreen', 'resultScreen'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(screenId).classList.remove('hidden');
+
+            if(screenId === 'welcomeScreen') {
+                document.getElementById('statusBar').classList.add('hidden');
+            } else {
+                document.getElementById('statusBar').classList.remove('hidden');
+            }
+        }
+
+        function startReviewPhase() {
+            currentPhase = 'review';
+            timeRemainingSeconds = 30 * 60;
+            document.getElementById('currentPhaseBadge').innerText = "REVIEW (30 MIN)";
+            document.getElementById('currentPhaseBadge').className = "text-cyber-neon font-bold";
+            
+            buildReviewList();
+            switchScreen('reviewScreen');
+            startTimer();
+        }
+
+        function skipToChallenge() {
+            startChallengePhase();
+        }
+
+        // Render ALL 35 items in Review Mode with bright yellow glowing highlights
+        function buildReviewList() {
+            const container = document.getElementById('reviewItemsContainer');
+            container.innerHTML = '';
+
+            const categories = {};
+            thesisData.forEach(item => {
+                if(!categories[item.category]) categories[item.category] = [];
+                categories[item.category].push(item);
+            });
+
+            for(let cat in categories) {
+                let catBlock = document.createElement('div');
+                catBlock.className = "bg-cyber-card p-4 sm:p-5 rounded-xl border border-cyber-border space-y-3 shadow-lg";
+
+                let header = document.createElement('h4');
+                header.className = "text-cyber-accent font-mono text-xs uppercase tracking-widest font-bold border-b border-cyber-border/70 pb-2 flex justify-between items-center";
+                header.innerHTML = `<span>${cat}</span> <span class="text-slate-400 font-normal text-[11px]">${categories[cat].length} Items</span>`;
+                catBlock.appendChild(header);
+
+                let list = document.createElement('div');
+                list.className = "space-y-3";
+
+                categories[cat].forEach(entry => {
+                    let row = document.createElement('div');
+                    row.className = "p-3 bg-cyber-bg/70 rounded-lg border border-cyber-border/40 flex flex-col gap-2";
+
+                    let promptP = document.createElement('p');
+                    promptP.className = "text-xs sm:text-sm font-semibold text-slate-200";
+                    promptP.innerText = entry.prompt;
+
+                    let highlightP = document.createElement('div');
+                    highlightP.className = "neon-highlight font-mono text-xs px-3 py-2 rounded-lg font-semibold leading-relaxed";
+                    highlightP.innerHTML = `🔑 RECALL TEXT: ${entry.highlight}`;
+
+                    row.appendChild(promptP);
+                    row.appendChild(highlightP);
+                    list.appendChild(row);
+                });
+
+                catBlock.appendChild(list);
+                container.appendChild(catBlock);
+            }
+        }
+
+        function startTimer() {
+            if(globalTimerInterval) clearInterval(globalTimerInterval);
+
+            globalTimerInterval = setInterval(() => {
+                timeRemainingSeconds--;
+                updateTimerDisplay();
+
+                if(timeRemainingSeconds <= 0) {
+                    clearInterval(globalTimerInterval);
+                    if(currentPhase === 'review') {
+                        startChallengePhase();
+                    } else if(currentPhase === 'challenge') {
+                        finishGame();
+                    }
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            let m = Math.floor(timeRemainingSeconds / 60);
+            let s = timeRemainingSeconds % 60;
+            let str = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+            document.getElementById('globalTimer').innerText = str;
+            if(currentPhase === 'challenge') {
+                document.getElementById('challengeTimer').innerText = str;
+            }
+        }
+
+        function startChallengePhase() {
+            currentPhase = 'challenge';
+            timeRemainingSeconds = 15 * 60; // 15 Mins for Challenge
+            document.getElementById('currentPhaseBadge').innerText = "CHALLENGE (15 MIN)";
+            document.getElementById('currentPhaseBadge').className = "text-cyber-accent font-bold";
+
+            shuffledQuestions = [...thesisData].sort(() => Math.random() - 0.5);
+            currentQuestionIndex = 0;
+            score = 0;
+            correctWordsTotal = 0;
+            penaltyCountTotal = 0;
+            missedItems = [];
+
+            document.getElementById('globalScore').innerText = '0';
+            switchScreen('challengeScreen');
+            loadQuestion();
+            startTimer();
+        }
+
+        function loadQuestion() {
+            if(currentQuestionIndex >= shuffledQuestions.length) {
+                finishGame();
+                return;
+            }
+
+            let q = shuffledQuestions[currentQuestionIndex];
+            document.getElementById('challengeCounter').innerText = `ITEM ${currentQuestionIndex + 1} OF ${shuffledQuestions.length}`;
+            document.getElementById('challengeCategory').innerText = q.category;
+            document.getElementById('questionPromptText').innerText = q.prompt;
+
+            // Update Progress bar
+            let pct = (currentQuestionIndex / shuffledQuestions.length) * 100;
+            document.getElementById('challengeProgressBar').style.width = `${pct}%`;
+
+            // Scramble words from target
+            let cleanTarget = q.target.replace(/[^a-zA-Z ]/g, "");
+            let words = cleanTarget.split(/\s+/).filter(w => w.length > 0);
+            let scrambled = [...words].sort(() => Math.random() - 0.5);
+
+            document.getElementById('scrambledWordsDisplay').innerText = scrambled.join('  •  ');
+
+            let inputElem = document.getElementById('userAnswerInput');
+            inputElem.value = '';
+            document.getElementById('feedbackBox').classList.add('hidden');
+            document.getElementById('inputErrorNotice').classList.add('hidden');
+            inputElem.focus();
+        }
+
+        // Live input validation (letters & spaces only)
+        function validateInputFormat(inputElem) {
+            let val = inputElem.value;
+            let notice = document.getElementById('inputErrorNotice');
+
+            // Flag if periods or special characters are typed
+            if(/[\.,\/#!$%\^&\*;:{}=\-_`~()?]/.test(val)) {
+                notice.classList.remove('hidden');
+            } else {
+                notice.classList.add('hidden');
+            }
+        }
+
+        function handleKeydown(evt) {
+            if(evt.key === 'Enter') {
+                submitAnswer();
+            }
+        }
+
+        function submitAnswer() {
+            let userVal = document.getElementById('userAnswerInput').value.trim();
+            if(!userVal) {
+                showModal("Input Needed", "Pakisulat ang iyong sagot bago mag-submit.");
+                return;
+            }
+
+            // Strip non-alpha/space
+            let cleanUser = userVal.replace(/[^a-zA-Z ]/g, "").toLowerCase();
+            let q = shuffledQuestions[currentQuestionIndex];
+            let cleanTarget = q.target.replace(/[^a-zA-Z ]/g, "").toLowerCase();
+
+            let userWords = cleanUser.split(/\s+/).filter(w => w.length > 0);
+            let targetWords = cleanTarget.split(/\s+/).filter(w => w.length > 0);
+
+            let correctWords = 0;
+            let wrongWords = 0;
+
+            userWords.forEach(uw => {
+                if(targetWords.includes(uw)) {
+                    correctWords++;
+                    score += 10;
+                    correctWordsTotal++;
+                } else {
+                    wrongWords++;
+                    score -= 5; // Minus points for typo / wrong word
+                    penaltyCountTotal++;
+                }
+            });
+
+            document.getElementById('globalScore').innerText = score;
+
+            let feedbackBox = document.getElementById('feedbackBox');
+            let feedbackIcon = document.getElementById('feedbackIcon');
+            let feedbackTitle = document.getElementById('feedbackTitle');
+            let feedbackDesc = document.getElementById('feedbackDesc');
+
+            feedbackBox.classList.remove('hidden');
+
+            if(wrongWords === 0 && correctWords >= Math.ceil(targetWords.length * 0.7)) {
+                feedbackBox.className = "mt-4 p-4 rounded-xl border bg-emerald-950/60 border-emerald-500/50 text-emerald-300";
+                feedbackIcon.innerText = "🎯";
+                feedbackTitle.innerText = "TAMA! EXCELLENT RECALL!";
+                feedbackDesc.innerText = `Nakuha mo ang nakahighlight na sagot (+${correctWords * 10} pts)!`;
+            } else {
+                feedbackBox.className = "mt-4 p-4 rounded-xl border bg-rose-950/60 border-rose-500/50 text-rose-300";
+                feedbackIcon.innerText = "⚠️";
+                feedbackTitle.innerText = "DEFENSE PENALTY ERROR!";
+                feedbackDesc.innerText = `Tama: ${correctWords} words | Mali/Penalty: ${wrongWords} words (-${wrongWords * 5} pts). Correct: "${q.target}"`;
+                missedItems.push(q);
+            }
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuestion();
+            }, 2200);
+        }
+
+        function finishGame() {
+            if(globalTimerInterval) clearInterval(globalTimerInterval);
+            currentPhase = 'result';
+
+            document.getElementById('resFinalScore').innerText = score;
+            document.getElementById('resCorrectCount').innerText = correctWordsTotal;
+            document.getElementById('resPenaltyCount').innerText = penaltyCountTotal;
+
+            let verdictBox = document.getElementById('defenseVerdictBox');
+            if(score >= 250) {
+                verdictBox.className = "p-4 rounded-xl border bg-emerald-950/60 border-emerald-500 text-emerald-300 font-mono-custom text-sm";
+                verdictBox.innerHTML = "🏆 <strong>VERDICT: DEFENSE MASTER!</strong> Handa na 100% ang iyong memorya para sa 35 items ng iyong thesis defense!";
+            } else if(score >= 100) {
+                verdictBox.className = "p-4 rounded-xl border bg-amber-950/60 border-amber-500 text-amber-300 font-mono-custom text-sm";
+                verdictBox.innerHTML = "⚡ <strong>VERDICT: PASSED!</strong> Maganda ang recall pero re-reviewhin pa ang mga nakaligtaang items sa ibaba.";
+            } else {
+                verdictBox.className = "p-4 rounded-xl border bg-rose-950/60 border-rose-500 text-rose-300 font-mono-custom text-sm";
+                verdictBox.innerHTML = "⚠️ <strong>VERDICT: NEEDS MORE STUDY!</strong> Ulitin ang 30-minute review phase para sa mga hindi pa kabisadong items.";
+            }
+
+            // Populate Lessons to Study
+            let lessonsContainer = document.getElementById('lessonsToStudyContainer');
+            lessonsContainer.innerHTML = '';
+
+            if(missedItems.length === 0) {
+                lessonsContainer.innerHTML = `<p class="text-emerald-400">Walang missed items! Perfect recall sa lahat ng 35 items!</p>`;
+            } else {
+                missedItems.forEach(item => {
+                    let p = document.createElement('div');
+                    p.className = "p-2 bg-cyber-card rounded border border-cyber-border text-slate-300";
+                    p.innerHTML = `<strong class="text-cyber-neon">${item.prompt}:</strong> <span class="text-amber-300">${item.highlight}</span>`;
+                    lessonsContainer.appendChild(p);
+                });
+            }
+
+            switchScreen('resultScreen');
+        }
+
+        function restartGame() {
+            switchScreen('welcomeScreen');
+        }
+    </script>
+</body>
+</html>
